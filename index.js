@@ -1,8 +1,21 @@
 const http = require('http')
+const morgan = require('morgan')
 const express = require('express')
 const app = express()
 
 app.use(express.json())
+
+morgan.token('POSTPerson', function getPOSTPerson (request, response) {
+  const body = request.body
+  if (JSON.stringify(body) === '{}') {
+      return ''
+  } else {
+      return JSON.stringify(body)
+  }
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :POSTPerson'))
+
 
 let persons = [
     { 
