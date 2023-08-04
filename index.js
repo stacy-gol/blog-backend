@@ -2,11 +2,11 @@ const http = require('http')
 const morgan = require('morgan')
 const express = require('express')
 const app = express()
-
-app.use(express.json())
 const cors = require('cors')
 
+app.use(express.json())
 app.use(cors())
+app.use(express.static('build'))
 
 morgan.token('POSTPerson', function getPOSTPerson (request, response) {
   const body = request.body
