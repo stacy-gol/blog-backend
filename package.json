@@ -7,7 +7,7 @@
     "start": "npm run dev",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf build && cd ../frontend && npm run build && cp -r build ../backend",
+    "build:ui": "rm -rf build && cd ../../web-crash-course/Part2-phonebook && npm run build && cp -r build ../../web-crush-course-backend/web-crush-course-backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "repository": {
