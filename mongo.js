@@ -20,21 +20,7 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model('Person', personSchema)
 
-const person = new Person({
-  name: 'Missy',
-  number: 556564
-})
-
-/*
-person.save().then(result => {
-  console.log('person saved!')
-  mongoose.connection.close()
-})
-*/
 
 Person.find({}).then(result => {
-  result.forEach(person => {
-    console.log(person)
-  })
   mongoose.connection.close()
 })

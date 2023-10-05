@@ -1,4 +1,3 @@
-const http = require('http')
 const morgan = require('morgan')
 const express = require('express')
 const app = express()
@@ -39,9 +38,12 @@ morgan.token('POSTPerson', function getPOSTPerson (request, response) {
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :POSTPerson'))
 
 
+
 app.get('/info', (request, response) => {
   const date = new Date()
-  response.send(`Phone book has info for ${Person.length} people <br/> ${date}`)
+  Person.countDocuments({}).then(count =>{
+    response.send(`Phone book has info for ${count} people <br/> ${date}`)
+  })
 })
 
 
