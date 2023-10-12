@@ -8,32 +8,21 @@ if (process.argv.length<3) {
 const password = process.argv[2]
 
 const url =
-  `mongodb+srv://stacy_gol:${password}@cluster0.c8q4oqc.mongodb.net/?retryWrites=true&w=majority`
+  `mongodb+srv://stacy_gol:${password}@cluster0.c8q4oqc.mongodb.net/bloglist?retryWrites=true&w=majority`
 
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
-const personSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    minLength: 3,
-    required: true
-  },
-  number: {
-    type: String,
-    validate: {
-      validator: function (v) {
-        return /^(\d{2})-(\d+)/.test(v);
-      },
-      message: props => `${props.value} is not a valid phone number!`
-    },
-    required: [true, 'User phone number required']
-  }
-});
+const blogSchema = new mongoose.Schema({
+  title: String,
+  author: String,
+  url: String,
+  likes: Number
+})
 
-const Person = mongoose.model('Person', personSchema)
+const Blog = mongoose.model('Blog', personSchema)
 
 
-Person.find({}).then(result => {
+Blog.find({}).then(result => {
   mongoose.connection.close()
 })
