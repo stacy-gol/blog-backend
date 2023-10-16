@@ -11,31 +11,30 @@ const requestLogger = (request, response, next) => {
 
 
 const errorHandler = (error, request, response, next) => {
-    logger.error(error.message)
-  
-    if (error.name === 'CastError') {
-      return response.status(400).send({ error: 'malformatted id' })
-    } else if (error.name === 'ValidationError') {
-      return response.status(400).json({ error: error.message })
-    }
-  
-    next(error)
-  }
-  
-  const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
+  logger.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   }
 
+  next(error)
+}
 
-  // morgan.token('POSTPerson', function getPOSTPerson (request, response) {
-  //   const body = request.body
-  //   if (JSON.stringify(body) === '{}') {
-  //       return ''
-  //   } else {
-  //       return JSON.stringify(body)
-  //   }
-  // })
-  
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+
+// morgan.token('POSTPerson', function getPOSTPerson (request, response) {
+//   const body = request.body
+//   if (JSON.stringify(body) === '{}') {
+//       return ''
+//   } else {
+//       return JSON.stringify(body)
+//   }
+// })
 // const morganStream = {
 //     write: (message) => {
 //       // используем функцию trim() для удаления новой строки в конце сообщений
@@ -44,9 +43,9 @@ const errorHandler = (error, request, response, next) => {
 //   };
 // const morganMiddleware = morgan(':method :url :status :res[content-length] - :response-time ms :POSTPerson', { stream: morganStream });
 
-  module.exports = {
-    unknownEndpoint,
-    errorHandler,
-    requestLogger
-    // morganMiddleware
-  }
+module.exports = {
+  unknownEndpoint,
+  errorHandler,
+  requestLogger
+  // morganMiddleware
+}

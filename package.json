@@ -6,8 +6,8 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
+    "test": "jest --verbose",
     "build:ui": "rm -rf build && cd ../../web-crash-course/Part2-phonebook && npm run build && cp -r build ../../web-crush-course-backend/web-crush-course-backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
@@ -31,6 +31,11 @@
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-n": "^16.1.0",
     "eslint-plugin-promise": "^6.1.1",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.1"
+    
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
