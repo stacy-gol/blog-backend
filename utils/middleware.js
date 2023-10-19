@@ -1,4 +1,3 @@
-// const morgan = require('morgan')
 const logger = require('./logger')
 
 const requestLogger = (request, response, next) => {
@@ -8,7 +7,6 @@ const requestLogger = (request, response, next) => {
   logger.info('---')
   next()
 }
-
 
 const errorHandler = (error, request, response, next) => {
   logger.error(error.message)
@@ -26,26 +24,8 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-
-// morgan.token('POSTPerson', function getPOSTPerson (request, response) {
-//   const body = request.body
-//   if (JSON.stringify(body) === '{}') {
-//       return ''
-//   } else {
-//       return JSON.stringify(body)
-//   }
-// })
-// const morganStream = {
-//     write: (message) => {
-//       // используем функцию trim() для удаления новой строки в конце сообщений
-//       logger.info(message.trim());
-//     }
-//   };
-// const morganMiddleware = morgan(':method :url :status :res[content-length] - :response-time ms :POSTPerson', { stream: morganStream });
-
 module.exports = {
   unknownEndpoint,
   errorHandler,
   requestLogger
-  // morganMiddleware
 }
