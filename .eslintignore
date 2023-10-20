@@ -1,6 +1,3 @@
 build
 .eslintrc.js
 mongo.js
-app.js
-middleware.js
-blogs.js
