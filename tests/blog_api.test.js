@@ -85,11 +85,20 @@ test('400 response', async () => {
     author: 'testAutor',
   };
   await api.post('/api/blogs').send(testBlogData).expect(400);
-  // const response = await api.get('/api/blogs');
-  // const { likes } = response.body.find(({ title }) => title === 'testTitle');
-  // expect(likes).toEqual(0);
 });
 
+describe('Deleting by id', async () => {
+  test('delete existing blog', async () => {
+    // delete blog from initialBlogs
+    // first read blogs from db to get Ids by wich you can call delete by Id
+  });
+  test('attempt to delete inexisting blogs', async () => {});
+});
+
+describe('updating by id', async () => {
+  test('updating existing blog', async () => {});
+  test('attempt to update inexisting blogs', async () => {});
+});
 afterAll(async () => {
   await mongoose.connection.close();
 });
