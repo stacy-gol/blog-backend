@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-const helper = require('./test_helper')
+const {
+  initialBlogs,
+  getAllBlogsFromDb,
+  getNonExistingId,
+} = require('./test_helper');
 const supertest = require('supertest');
 const app = require('../app');
 
@@ -9,9 +13,9 @@ const Blog = require('../models/blog');
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  let blogObject = new Blog(helper.initialBlogs[0]);
+  let blogObject = new Blog(initialBlogs[0]);
   await blogObject.save();
-  blogObject = new Blog(helper.initialBlogs[1]);
+  blogObject = new Blog(initialBlogs[1]);
   await blogObject.save();
 });
 
@@ -24,7 +28,7 @@ test('blogs are returned as json', async () => {
 
 test('all notes are returned', async () => {
   const response = await api.get('/api/blogs');
-  expect(response.body).toHaveLength(helper.initialBlogs.length);
+  expect(response.body).toHaveLength(initialBlogs.length);
 });
 
 test('a specific note is within the returned notes', async () => {
@@ -75,70 +79,61 @@ test('400 response', async () => {
 
 describe('deleting by id', () => {
   test('delete existing blog', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+    const blogsAtStart = await getAllBlogsFromDb();
+    const blogToDelete = blogsAtStart[0];
 
-    await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
-      .expect(204)
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
-    const blogsAtEnd = await helper.blogsInDb()
+    const blogsAtEnd = await getAllBlogsFromDb();
 
-    expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length - 1
-    )
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1);
 
-    const contents = blogsAtEnd.map(r => r.title)
+    const contents = blogsAtEnd.map((r) => r.title);
 
-    expect(contents).not.toContain(blogToDelete.title)
-  })
+    expect(contents).not.toContain(blogToDelete.title);
+  });
   test('attempt to delete inexisting blogs', async () => {
-    const nonExistingId = await helper.nonExistingId()
+    const nonExistingId = await getNonExistingId();
+    await api.delete(`/api/blogs/${nonExistingId}`).expect(404);
 
-    await api
-      .delete(`/api/blogs/${nonExistingId}`)
-      .expect(404)
+    const blogsAtEnd = await getAllBlogsFromDb();
 
-    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length);
+  });
+});
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
-  })
-})
-
-describe('deleting by id', () => {
+describe('updating by id', () => {
   test('updating existing blog', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToUpdate = blogsAtStart[0]
+    const blogsAtStart = await getAllBlogsFromDb();
+    const blogToUpdate = blogsAtStart[0];
 
     const newBlogInfo = {
       title: 'Blog1',
       author: 'Autor1',
       url: 'wikipedia',
       likes: 100,
-    }
+    };
+
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
       .send(newBlogInfo)
-      .expect(200)
+      .expect(200);
 
-    const blogsAtEnd = await helper.blogsInDb()
-    const updatedBlog = blogsAtEnd.find(b => b.id === blogToUpdate.id)
+    const blogsAtEnd = await getAllBlogsFromDb();
+    const updatedBlog = blogsAtEnd.find((b) => b.id === blogToUpdate.id);
 
-    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
-    expect(updatedBlog.title).toEqual(newBlogInfo.title)
-  })
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
+    expect(updatedBlog.title).toEqual(newBlogInfo.title);
+  });
   test('attempt to update inexisting blogs', async () => {
-    const nonExistingId = await helper.nonExistingId()
+    const nonExistingId = await getNonExistingId();
+    await api.put(`/api/blogs/${nonExistingId}`).expect(404);
 
-    await api
-      .put(`/api/blogs/${nonExistingId}`)
-      .expect(404)
+    const blogsAtEnd = await getAllBlogsFromDb();
 
-    const blogsAtEnd = await helper.blogsInDb()
-
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
-  })
-})
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length);
+  });
+});
 afterAll(async () => {
   await mongoose.connection.close();
 });
